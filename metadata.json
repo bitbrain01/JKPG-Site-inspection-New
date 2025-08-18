@@ -1,0 +1,7 @@
+{
+  "name": "Site Inspection App",
+  "description": "A web application for conducting detailed site inspections and audits for retail locations like gas stations.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}

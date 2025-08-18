@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JKPG Aimztech Site Inspection App</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif; /* Using Inter as a preferred font */
+    }
+    /* Custom scrollbar for better aesthetics (optional) */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+
+    @media print { /* Styles for window.print(), good to keep for accessibility/fallback */
+      body {
+        -webkit-print-color-adjust: exact; /* Ensures colors and backgrounds print in Chrome/Safari */
+        print-color-adjust: exact;
+      }
+      header, footer, button, .no-print, #submit-audit-button, #download-pdf-button { /* Common elements to hide */
+        display: none !important;
+      }
+      main { /* Ensure main content takes full width/height */
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+      .accordion-item-print-open > div:last-child { /* If we force accordions open with a class */
+          display: block !important;
+      }
+      .accordion-item-print-open button svg {
+          transform: rotate(180deg);
+      }
+    }
+
+    /* Styles for html2canvas PDF generation */
+    #app-container.is-generating-pdf > header, /* Hides ScoreHeader */
+    #app-container.is-generating-pdf #submit-audit-button,
+    #app-container.is-generating-pdf #download-pdf-button,
+    #app-container.is-generating-pdf > footer { /* Hides main footer */
+      display: none !important;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.1.0/",
+    "react": "https://esm.sh/react@^19.1.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.1.0/"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="bg-gray-50">
+  <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
