@@ -8,7 +8,11 @@ export const LOCATIONS: string[] = [
   "Downtown Express Fuel",
   "Route 66 Gas & Go",
   "City Center Petroleum",
-  "Centreville BP"
+  "Centreville BP",
+  "Rhode Island BP",
+  "Eastern Avenue BP",
+  "Benning Rd BP"
+
 ];
 
 export const INSPECTION_DATA: SectionData[] = [
