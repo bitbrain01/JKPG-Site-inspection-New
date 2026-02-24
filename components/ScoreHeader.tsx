@@ -5,7 +5,7 @@ import { CheckIconSolid } from './icons';
 interface ScoreHeaderProps {
   liveScore: number;
   totalPossibleScore: number;
-  locations: string[];
+  locations: readonly string[];
   selectedLocation: string;
   onLocationChange: (location: string) => void;
 }

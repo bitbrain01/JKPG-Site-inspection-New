@@ -28,7 +28,8 @@ const Toast: React.FC<ToastProps> = ({ message, type, onClose }) => {
   return (
     <div
       className={`fixed top-5 right-5 z-50 flex items-center w-full max-w-sm p-4 ${textColor} ${baseBgColor} rounded-lg shadow-lg border-l-4 ${isSuccess ? 'border-green-500' : 'border-red-500'}`}
-      role="alert"
+      role={isSuccess ? 'status' : 'alert'}
+      aria-live={isSuccess ? 'polite' : 'assertive'}
     >
       <div className={`inline-flex items-center justify-center flex-shrink-0 w-8 h-8 ${iconColor}`}>
         <Icon className="w-6 h-6" />

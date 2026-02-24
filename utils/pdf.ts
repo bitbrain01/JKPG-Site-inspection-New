@@ -1,12 +1,47 @@
 import { ACCENT_COLOR } from '../constants';
 import { SectionData, SelectedAnswers, Comments, Photos } from '../types';
 
+type ImageFormat = 'PNG' | 'JPEG';
+
+const getImageFormatFromDataUrl = (dataUrl: string): ImageFormat => {
+  if (dataUrl.startsWith('data:image/jpeg') || dataUrl.startsWith('data:image/jpg')) {
+    return 'JPEG';
+  }
+  return 'PNG';
+};
+
 declare global {
   interface Window {
     jspdf: {
-      jsPDF: any;
+      jsPDF: new (options: { orientation: 'p'; unit: 'pt'; format: 'a4' }) => {
+        internal: {
+          pageSize: {
+            getHeight(): number;
+            getWidth(): number;
+          };
+        };
+        addPage(): void;
+        save(fileName: string): void;
+        setFontSize(size: number): void;
+        setFont(name?: string, style?: string): void;
+        setTextColor(r: number | string, g?: number, b?: number): void;
+        text(text: string | string[], x: number, y: number, options?: { align?: 'left' | 'center' | 'right' }): void;
+        setDrawColor(r: number | string, g?: number, b?: number): void;
+        line(x1: number, y1: number, x2: number, y2: number): void;
+        getImageProperties(imageData: string): { width: number; height: number };
+        addImage(
+          imageData: string,
+          format: ImageFormat,
+          x: number,
+          y: number,
+          width: number,
+          height: number,
+          alias?: string,
+          compression?: 'NONE' | 'FAST' | 'MEDIUM' | 'SLOW'
+        ): void;
+        splitTextToSize(text: string, size: number): string[];
+      };
     };
-    html2canvas: any;
   }
 }
 
@@ -24,7 +59,7 @@ interface PdfGeneratorData {
 }
 
 class PdfBuilder {
-  private doc: any;
+  private doc: InstanceType<Window['jspdf']['jsPDF']>;
   private y: number;
   private pageHeight: number;
   private readonly margin = 40;
@@ -101,7 +136,7 @@ class PdfBuilder {
 
     this.addPageIfNecessary(imgHeight + 20);
     try {
-        this.doc.addImage(imageData, 'PNG', this.margin, this.y, imgWidth, imgHeight, undefined, 'FAST');
+      this.doc.addImage(imageData, getImageFormatFromDataUrl(imageData), this.margin, this.y, imgWidth, imgHeight, undefined, 'FAST');
         this.y += imgHeight + 20;
     } catch (e) {
         console.error("Failed to add pump compliance image to PDF:", e);
@@ -177,7 +212,7 @@ class PdfBuilder {
           const x = this.margin + (i * (photoSize + 10));
           
           try {
-            this.doc.addImage(photoDataUrl, 'PNG', x, this.y, photoSize, photoSize, undefined, 'FAST');
+            this.doc.addImage(photoDataUrl, getImageFormatFromDataUrl(photoDataUrl), x, this.y, photoSize, photoSize, undefined, 'FAST');
           } catch(e) {
             console.error("Failed to add image to PDF:", e);
             this.doc.setFont(undefined, 'normal');

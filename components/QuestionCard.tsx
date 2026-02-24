@@ -72,8 +72,8 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
         <h3 className="text-md sm:text-lg font-medium text-gray-800">{question.text}</h3>
       </div>
 
-      <div role="radiogroup" aria-labelledby={`question-${question.id}-label`}>
-        <span id={`question-${question.id}-label`} className="sr-only">{question.text}</span>
+      <fieldset className="border-0 p-0 m-0" aria-labelledby={`question-${question.id}-label`}>
+        <legend id={`question-${question.id}-label`} className="sr-only">{question.text}</legend>
         {question.options.map((option) => {
             const isSelected = selectedAnswer === option.text;
             
@@ -95,27 +95,23 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
               <label
                 key={option.text}
                 className={getOptionStyling(option)}
-                onClick={() => onAnswerChange(question.id, option.text)}
               >
                 <div className="flex items-center">
-                   {isSelected && option.points !== 'N/A' ? (
-                     <>
-                        { (typeof option.points === 'number' && option.points === 0) ? (
-                            <XCircleIcon className="w-6 h-6 mr-3 text-red-500 shrink-0" />
-                        ) : (
-                            <CheckCircleIcon className="w-6 h-6 mr-3 text-green-500 shrink-0" />
-                        )}
-                     </>
-                  ) : (
-                     <input
-                        type="radio"
-                        name={question.id}
-                        value={option.text}
-                        checked={isSelected}
-                        onChange={() => onAnswerChange(question.id, option.text)}
-                        className="h-4 w-4 mr-3 focus:ring-offset-0 focus:ring-2 shrink-0"
-                        style={{ accentColor: option.points === 'N/A' ? '#f59e0b' /* yellow-500 */ : ACCENT_COLOR }}
-                      />
+                  <input
+                    type="radio"
+                    name={question.id}
+                    value={option.text}
+                    checked={isSelected}
+                    onChange={() => onAnswerChange(question.id, option.text)}
+                    className="h-4 w-4 mr-3 focus:ring-offset-0 focus:ring-2 shrink-0"
+                    style={{ accentColor: option.points === 'N/A' ? '#f59e0b' /* yellow-500 */ : ACCENT_COLOR }}
+                  />
+                  {isSelected && option.points !== 'N/A' && (
+                    (typeof option.points === 'number' && option.points === 0) ? (
+                      <XCircleIcon className="w-5 h-5 mr-2 text-red-500 shrink-0" aria-hidden="true" />
+                    ) : (
+                      <CheckCircleIcon className="w-5 h-5 mr-2 text-green-500 shrink-0" aria-hidden="true" />
+                    )
                   )}
                   <span className={`text-sm sm:text-base ${textStyle}`}>
                     {option.text}
@@ -134,7 +130,7 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
               </label>
             );
         })}
-      </div>
+      </fieldset>
 
       <div className="mt-4 pt-4 border-t border-gray-200/80">
         <label htmlFor={`comment-${question.id}`} className="block text-sm font-medium text-gray-700 mb-1">

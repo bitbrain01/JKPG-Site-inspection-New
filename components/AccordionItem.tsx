@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useId } from 'react';
 import { ChevronDownIcon } from './icons';
 import { ACCENT_COLOR } from '../constants';
 
@@ -13,14 +13,18 @@ interface AccordionItemProps {
 
 const AccordionItem: React.FC<AccordionItemProps> = ({ title, isOpen, onToggle, children, forceOpen = false }) => {
   const isEffectivelyOpen = forceOpen || isOpen;
+  const contentId = useId();
+  const triggerId = `${contentId}-trigger`;
   
   return (
     <div className="border border-gray-200 rounded-lg shadow-sm mb-3 bg-white overflow-hidden">
       <button
+        id={triggerId}
         onClick={onToggle}
         className="w-full flex justify-between items-center p-4 text-left text-lg font-semibold focus:outline-none"
         style={{ color: isEffectivelyOpen ? ACCENT_COLOR : '#1f2937' /* gray-800 */ }}
         aria-expanded={isEffectivelyOpen}
+        aria-controls={contentId}
       >
         {title}
         <ChevronDownIcon
@@ -28,7 +32,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({ title, isOpen, onToggle, 
         />
       </button>
       {isEffectivelyOpen && (
-        <div className="p-4 border-t border-gray-200 bg-gray-50">
+        <div id={contentId} role="region" aria-labelledby={triggerId} className="p-4 border-t border-gray-200 bg-gray-50">
           {children}
         </div>
       )}

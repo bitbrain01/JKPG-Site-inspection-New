@@ -1,5 +1,12 @@
 
 export type PumpStatus = 'compliant' | 'non-compliant';
+export type ToastType = 'success' | 'error';
+
+export interface AuditMeta {
+  locationName: string;
+  inspectorName: string;
+  inspectionDate: string;
+}
 
 export interface AnswerOption {
   text: string;
@@ -22,7 +29,46 @@ export interface SectionData {
   questions: Question[];
 }
 
-export type SelectedAnswers = Record<string, string | undefined>; // questionId: selectedAnswerText
-export type NumericInputValues = Record<string, string | undefined>; // questionId: numericValue (as string)
-export type Comments = Record<string, string | undefined>; // questionId: commentText
-export type Photos = Record<string, string[] | undefined>; // questionId: base64 image data URLs
+export type QuestionId = string;
+export type SelectedAnswers = Record<QuestionId, string | undefined>; // questionId: selectedAnswerText
+export type NumericInputValues = Record<QuestionId, string | undefined>; // questionId: numericValue (as string)
+export type Comments = Record<QuestionId, string | undefined>; // questionId: commentText
+export type Photos = Record<QuestionId, string[] | undefined>; // questionId: base64 image data URLs
+
+export interface InspectionScoreSummary {
+  liveScore: number;
+  totalPossibleScore: number;
+  totalQuestions: number;
+  answeredQuestions: number;
+}
+
+export interface InspectionSavePayload extends AuditMeta {
+  selectedAnswers: SelectedAnswers;
+  numericInputValues: NumericInputValues;
+  comments: Comments;
+  photos: Photos;
+  numberOfPumps: number;
+  pumpStatuses: PumpStatus[];
+  liveScore: number;
+  totalPossibleScore: number;
+  savedAt: string;
+}
+
+export type InspectionRecordType = 'draft' | 'completed';
+
+export interface InspectionDraft {
+  id: string;
+  recordType: InspectionRecordType;
+  payload: InspectionSavePayload;
+  createdAt: string;
+  updatedAt: string;
+  completedAt?: string;
+  syncStatus?: 'local-only' | 'synced' | 'sync-failed';
+  lastSyncedAt?: string;
+  syncError?: string;
+}
+
+export interface InspectionSubmitResult {
+  remoteId: string;
+  submittedAt: string;
+}

@@ -2,18 +2,16 @@ import { SectionData } from './types';
 
 export const ACCENT_COLOR = "#009639"; // BP-style Green
 
-export const LOCATIONS: string[] = [
-  "BP Main Street #123",
-  "Amoco Highway 101",
-  "Downtown Express Fuel",
-  "Route 66 Gas & Go",
-  "City Center Petroleum",
+export const LOCATIONS = [
   "Centreville BP",
   "Rhode Island BP",
   "Eastern Avenue BP",
-  "Benning Rd BP"
+  "Benning Rd BP",
+  "Sherman Ave BP"
 
-];
+] as const;
+
+export type LocationName = (typeof LOCATIONS)[number];
 
 export const INSPECTION_DATA: SectionData[] = [
   {

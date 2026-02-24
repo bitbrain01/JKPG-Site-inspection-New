@@ -8,9 +8,11 @@ interface CameraModalProps {
 }
 
 const CameraModal: React.FC<CameraModalProps> = ({ onCapture, onClose }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const previouslyFocusedElementRef = useRef<HTMLElement | null>(null);
   const [facingMode, setFacingMode] = useState<'environment' | 'user'>('environment');
   const [error, setError] = useState<string | null>(null);
 
@@ -49,6 +51,11 @@ const CameraModal: React.FC<CameraModalProps> = ({ onCapture, onClose }) => {
   }, [facingMode]);
 
   useEffect(() => {
+    previouslyFocusedElementRef.current = document.activeElement instanceof HTMLElement
+      ? document.activeElement
+      : null;
+    containerRef.current?.focus();
+
     startCamera();
     
     // Cleanup function
@@ -56,8 +63,23 @@ const CameraModal: React.FC<CameraModalProps> = ({ onCapture, onClose }) => {
       if (streamRef.current) {
         streamRef.current.getTracks().forEach(track => track.stop());
       }
+      previouslyFocusedElementRef.current?.focus();
     };
   }, [startCamera]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent): void => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        onClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [onClose]);
 
   const handleCapture = () => {
     if (videoRef.current && canvasRef.current) {
@@ -82,7 +104,14 @@ const CameraModal: React.FC<CameraModalProps> = ({ onCapture, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center">
+    <div
+      ref={containerRef}
+      className="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Camera capture"
+      tabIndex={-1}
+    >
       <video
         ref={videoRef}
         autoPlay
